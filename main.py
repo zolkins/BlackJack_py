@@ -1,7 +1,7 @@
 # BlackJack21
 import random  # Импорт модуля рандома для перетасовки колоды и создание колоды из 52 карт (4 масти по 13 карт)
  
-version = "0.9.4.1"  # Версия программы
+version = "0.9.4.2"  # Версия программы
 # Изменяемые переменные
 playerpoints, dealerpoints = int(), int()
 playercards, dealercards = list(), list()
@@ -88,6 +88,9 @@ def main():
 # Подсчёт очков
 def points(cards, old_points):
     point = 0
+    if cards.count("A") == 2:
+        point = 12
+        return point
     for i in cards:
         if i != "A":
             if type(i) == str:
@@ -150,6 +153,8 @@ def player(deck_s):
         # Проверка на перебор
         if playerpoints > 21:
             print(f"Перебор! Ваши очки {playerpoints}")
+            return
+        if playerpoints >= 21:
             return
         # Взять еще карту или остановится (пока не перебор)
         var = input(f"Новая сумма карт {playerpoints}\nВзять еще H, Остановиться S\n")
