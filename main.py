@@ -1,31 +1,34 @@
 # BlackJack21
-import random  # Импорт модуля рандома для перетасовки колоды и создание колоды из 52 карт (4 масти по 13 карт)
- 
+import random  # Импорт модуля рандома
+
 version = "0.9.4.2"  # Версия программы
 # Изменяемые переменные
 playerpoints, dealerpoints = int(), int()
 playercards, dealercards = list(), list()
- 
+
 # Правила игры
-rules = "Цель игры — набрать 21 очко или близкую к этому сумму.\nЕсли игрок набирает сумму очков, превышающую 21, то его ставка проигрывает.\nЕсли сумма очков на картах дилера больше, чем 21, то все ставки, оставшиеся в игре, выигрывают.\nИгроки, набравшие сумму очков большую, чем дилер, выигрывают, их ставки оплачиваются 1:1."
-card_value = "Значения очков каждой карты: от двойки до десятки — от 2 до 10 соответственно, у туза — 1 или 11 (11 пока общая сумма не больше 21, далее 1), у картинок (король, дама, валет) — 10."
- 
- 
+rules = "Цель игры — набрать 21 очко или близкую к этому сумму.\nЕсли игрок набирает сумму очков, превышающую 21, то его ставка проигрывает.\n" \
+        "Если сумма очков на картах дилера больше, чем 21, то все ставки, оставшиеся в игре, выигрывают." \
+        "\nИгроки, набравшие сумму очков большую, чем дилер, выигрывают, их ставки оплачиваются 1:1."
+card_value = "Значения очков каждой карты: от двойки до десятки — от 2 до 10 соответственно, у туза — 1 или 11\n" \
+             "(11 пока общая сумма не больше 21, далее 1), у картинок (король, дама, валет) — 10."
+
+
 # Колода и перетасовка
 def shuffle_deck():
     deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"] * 4  # Создание колоды из 52 карт (4 масти по 13 карт)
     random.shuffle(deck)  # Перетасовка колоды
     return deck
- 
- 
+
+
 # Игра (Основная функция)
 def game(deck_new):
     count_players = count_p(int(input("Сколько игроков будет?(Максимум 4)\n")))  # Need to add logic for more players
     chek_win(deck_new, count_players)
     # print(playerpoints, dealerpoints)  # DEBUG---------------------
     main()
- 
- 
+
+
 def menu(deck_new):
     print("1. Начать игру\n2. Значения карт\n3. Правила игры\n4. Выход")
     menu_choice = input()
@@ -42,8 +45,8 @@ def menu(deck_new):
     else:
         print("Неверный ввод!")
         menu(deck_new)
- 
- 
+
+
 # Проверка на победу и инициализация игроков и дилера
 def chek_win(deck_new, count_players):
     i = 0
@@ -71,20 +74,21 @@ def chek_win(deck_new, count_players):
         print("Ничья! (по очкам до 21)")
     else:
         print(f' \t\tplayerpoints = {playerpoints}, dealerpoints = {dealerpoints} Error maybe?')  # DEBUG
-    print(f'Карты игрока = {playercards}, Карты дилера{dealercards}\nОчки игрока = {playerpoints}, Очки дилера = {dealerpoints}')  # DEBUG
+    print(
+        f'Карты игрока = {playercards}, Карты дилера{dealercards}\nОчки игрока = {playerpoints}, Очки дилера = {dealerpoints}')  # DEBUG
     print('*****************************************************************************************\n\n')
- 
- 
+
+
 # main  Вызывает menu(), player() dealer() game()
 def main():
     print(f"Hello! U are in BlackJack21_{version}")
     # Очистка карт игроков и дилера перед началом игры
     playercards.clear()
-    dealercards.clear()  
+    dealercards.clear()
     deck_new = shuffle_deck()  # Переменная для перетасованной колоды (переменная для передачи в функции)
     menu(deck_new)  # Вызов меню игры (1. Начать игру, 2. Значения карт, 3. Правила игры, 4. Выход)
- 
- 
+
+
 # Подсчёт очков
 def points(cards, old_points):
     point = 0
@@ -103,15 +107,15 @@ def points(cards, old_points):
         else:
             point += 1
     return point
- 
- 
+
+
 # Взять еще
 def add_card(deck_s):
     added_card = deck_s.pop(0)
-   # print(added_card)  # DEBUG---------------------
+    # print(added_card)  # DEBUG---------------------
     return added_card
- 
- 
+
+
 # -SOON-
 # Добавить игрока
 def count_p(count):
@@ -127,8 +131,8 @@ def count_p(count):
     else:
         print("Неверный ввод!")
         count_p(int(input("Сколько игроков будет?\n")))
- 
- 
+
+
 # Игрок
 # Начальные карты игрока
 def player(deck_s):
@@ -170,8 +174,8 @@ def player(deck_s):
             var = input(f"Новая сумма карт {playerpoints}\nВзять еще H, Остановиться S\n")
     print('Ваши карты!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', playercards)
     return playerpoints
- 
- 
+
+
 # Дилер
 # Начальные карты дилера
 def dealer(deck_s):
@@ -214,11 +218,7 @@ def dealer(deck_s):
             print("Дилер пропускает ход")
     else:
         print("Дилер пропускает ход")
- 
-    # механика игрока поменять для дилера#DEBUG---------------------
-    # if choose == 'H':#DEBUG---------------------
-    # dealerpoints += add_card(deck)#DEBUG---------------------
     return dealerpoints, cards
- 
- 
+
+
 main()
