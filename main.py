@@ -1,7 +1,9 @@
 # BlackJack21
 import random  # Импорт модуля рандома
 
-version = "0.9.4.2"  # Версия программы
+version = "0.9.9|Single_Player"  # Версия программы
+print(f"Hello! U are in BlackJack21_{version}")
+
 # Изменяемые переменные
 playerpoints, dealerpoints = int(), int()
 playercards, dealercards = list(), list()
@@ -21,40 +23,32 @@ def shuffle_deck():
     return deck
 
 
-# Игра (Основная функция)
-def game(deck_new):
-    count_players = count_p(int(input("Сколько игроков будет?(Максимум 4)\n")))  # Need to add logic for more players
-    chek_win(deck_new, count_players)
-    # print(playerpoints, dealerpoints)  # DEBUG---------------------
-    main()
-
-
-def menu(deck_new):
-    print("1. Начать игру\n2. Значения карт\n3. Правила игры\n4. Выход")
-    menu_choice = input()
+def menu():
+    menu_choice = input("1. Начать игру\n2. Значения карт\n3. Правила игры\n4. Выход\n")
     if menu_choice == "1":
-        game(deck_new)
+        chek_win(shuffle_deck())
+        while input("Хотите еще раз? - 1\nВыход - 0\n") == "1":
+            chek_win(shuffle_deck())
+        else:
+            exit()
     elif menu_choice == "2":
         print(card_value)
-        menu(deck_new)
+        menu()
     elif menu_choice == "3":
         print(rules)
-        menu(deck_new)
+        menu()
     elif menu_choice == "4":
         exit()
     else:
         print("Неверный ввод!")
-        menu(deck_new)
+        menu()
 
 
 # Проверка на победу и инициализация игроков и дилера
-def chek_win(deck_new, count_players):
-    i = 0
+def chek_win(deck_new):
+    playercards.clear(), dealercards.clear()    # Очистка карт игроков и дилера перед началом игры
     dealer(deck_new)
-    while i < count_players:
-        print(f"Игрок {i + 1}")
-        player(deck_new)
-        i += 1
+    player(deck_new)
     global playerpoints, dealerpoints
     if playerpoints == dealerpoints:
         print("Ничья!")
@@ -76,17 +70,7 @@ def chek_win(deck_new, count_players):
         print(f' \t\tplayerpoints = {playerpoints}, dealerpoints = {dealerpoints} Error maybe?')  # DEBUG
     print(
         f'Карты игрока = {playercards}, Карты дилера{dealercards}\nОчки игрока = {playerpoints}, Очки дилера = {dealerpoints}')  # DEBUG
-    print('*****************************************************************************************\n\n')
-
-
-# main  Вызывает menu(), player() dealer() game()
-def main():
-    print(f"Hello! U are in BlackJack21_{version}")
-    # Очистка карт игроков и дилера перед началом игры
-    playercards.clear()
-    dealercards.clear()
-    deck_new = shuffle_deck()  # Переменная для перетасованной колоды (переменная для передачи в функции)
-    menu(deck_new)  # Вызов меню игры (1. Начать игру, 2. Значения карт, 3. Правила игры, 4. Выход)
+    print('*****************************************************************************************\n')
 
 
 # Подсчёт очков
@@ -101,6 +85,7 @@ def points(cards, old_points):
                 point += 10
             else:
                 point += i
+
     if "A" in cards:
         if old_points + 11 <= 21:
             point += 11
@@ -109,116 +94,53 @@ def points(cards, old_points):
     return point
 
 
-# Взять еще
-def add_card(deck_s):
-    added_card = deck_s.pop(0)
-    # print(added_card)  # DEBUG---------------------
-    return added_card
-
-
-# -SOON-
-# Добавить игрока
-def count_p(count):
-    print(f"Количество игроков = {count}")
-    if count == 1:
-        return 1
-    elif count == 2:
-        return 2
-    elif count == 3:
-        return 3
-    elif count == 4:
-        return 4
-    else:
-        print("Неверный ввод!")
-        count_p(int(input("Сколько игроков будет?\n")))
-
-
 # Игрок
-# Начальные карты игрока
 def player(deck_s):
     global playerpoints, playercards
-    # print(f"Получил{deck}")                        #DEBUG---------------------
-    cards = [deck_s.pop(0), deck_s.pop(0)]
-    # Добавить карты в список карт игрока
-    playercards.append(cards)
-    print(f"Ваши начальные карты\n{cards[0]} и {cards[1]}\nСумма ваших очков {points(cards, old_points=0)}")
-    # Подсчёт очков
-    playerpoints = points(cards, old_points=0)
+    playercards = [deck_s.pop(0), deck_s.pop(0)]
+    playerpoints = points(playercards, 0)   # Подсчёт очков
+    print(f"\nВаши начальные карты\n{playercards[0]} и {playercards[1]}\nСумма ваших очков {playerpoints}\n")
     if playerpoints == 21:
         print("БлекДжек!!!")
         return
     # Взять еще карту или остановиться (пока не перебор)
-    choose = input("Взять еще H, Остановится S\n")
-    if choose == 'H':
-        i = [add_card(deck_s)]
-        # Добавить карту в список карт игрока
-        playercards.append(i)
-        playerpoints += points(i, playerpoints)
-        # Проверка на перебор
-        if playerpoints > 21:
-            print(f"Перебор! Ваши очки {playerpoints}")
-            return
-        if playerpoints >= 21:
-            return
-        # Взять еще карту или остановится (пока не перебор)
-        var = input(f"Новая сумма карт {playerpoints}\nВзять еще H, Остановиться S\n")
-        # цикл пока вводят H
-        while var == 'H':
-            d = [add_card(deck_s)]
-            # Добавить карту в список карт игрока
-            playercards.append(d)
-            playerpoints += points(d, playerpoints)
-            # Проверка на перебор или 21 |выход из цикла
-            if playerpoints >= 21:
-                return
-            var = input(f"Новая сумма карт {playerpoints}\nВзять еще H, Остановиться S\n")
-    print('Ваши карты!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', playercards)
+    while playerpoints < 21:
+        print("H - Взять еще\nS - Стоп")
+        choice = input()
+        if choice == "H":
+            playercards.append(deck_s.pop(0))
+            playerpoints = points(playercards, playerpoints)
+            print(f"Ваши карты {playercards}\nСумма ваших очков {playerpoints}")
+        elif choice == "S":
+            print("Стоп")
+            break
+    if playerpoints > 21:
+        print("Перебор!")
     return playerpoints
 
 
 # Дилер
-# Начальные карты дилера
 def dealer(deck_s):
     global dealerpoints, dealercards
-    # print(f"Получил{deck}")                        #DEBUG---------------------
-    cards = [deck_s.pop(0), deck_s.pop(0)]  # Первые 2 карты дилера ( одна открытая вторая закрытая)
-    # Добавить карты в список карт дилера
-    dealercards.append(cards)
-    print(f"Карты дилера\n{cards[0]} и закрытая")
-    # print(f"Оставил{deck}")                        #DEBUG---------------------
-    dealerpoints = points(cards, old_points=0)
-    if dealerpoints <= 11:
-        i = [add_card(deck_s)]
-        # Добавить карту в список карт дилера
-        dealercards.append(i)
-        dealerpoints += points(i, dealerpoints)
-        while dealerpoints <= 11:
-            d = [add_card(deck_s)]
-            # Добавить карту в список карт дилера
-            dealercards.append(d)
-            dealerpoints += points(d, dealerpoints)
-    elif dealerpoints <= 14:
+    dealercards = [deck_s.pop(0), deck_s.pop(0)]  # Первые 2 карты дилера ( одна открытая вторая закрытая)
+    print(f"Карты дилера:\t{dealercards[0]} и закрытая")
+    dealerpoints = points(dealercards, 0)
+    while dealerpoints <= 11:
+        dealercards.append(deck_s.pop(0))   # Добавить карту в список карт дилера
+        dealerpoints = points(dealercards, dealerpoints)
+    if dealerpoints <= 14:
         if random.randint(0, 1) == 1:
-            i = [add_card(deck_s)]
-            # Добавить карту в список карт дилера
-            dealercards.append(i)
-            dealerpoints += points(i, dealerpoints)
+            dealercards.append(deck_s.pop(0))   # Добавить карту в список карт дилера
+            dealerpoints = points(dealercards, dealerpoints)
     elif dealerpoints <= 17:
         if random.randint(0, 1) == 1:
-            i = [add_card(deck_s)]
-            # Добавить карту в список карт дилера
-            dealercards.append(i)
-            dealerpoints += points(i, dealerpoints)
-            while dealerpoints <= 17:
-                d = [add_card(deck_s)]
-                # Добавить карту в список карт дилера
-                dealercards.append(d)
-                dealerpoints += points(d, dealerpoints)
+            dealercards.append(deck_s.pop(0))   # Добавить карту в список карт дилера
+            dealerpoints = points(dealercards, dealerpoints)
         else:
             print("Дилер пропускает ход")
     else:
         print("Дилер пропускает ход")
-    return dealerpoints, cards
+    return dealerpoints
 
 
-main()
+menu()
