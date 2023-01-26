@@ -1,5 +1,6 @@
 # BlackJack21
 import random  # Импорт модуля рандома
+import sys
 
 version = "0.9.9|Single_Player"  # Версия программы
 print(f"Hello! U are in BlackJack21_{version}")
@@ -30,7 +31,7 @@ def menu():
         while input("Хотите еще раз? - 1\nВыход - 0\n") == "1":
             chek_win(shuffle_deck())
         else:
-            exit()
+            sys.exit()
     elif menu_choice == "2":
         print(card_value)
         menu()
@@ -38,7 +39,7 @@ def menu():
         print(rules)
         menu()
     elif menu_choice == "4":
-        exit()
+        sys.exit()
     else:
         print("Неверный ввод!")
         menu()
